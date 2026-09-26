@@ -1,0 +1,46 @@
+services:
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+    networks:
+      - web
+
+  wikijs-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: wiki
+      POSTGRES_USER: wikijs
+      POSTGRES_PASSWORD: change_me
+    volumes:
+      - wikijs_db:/var/lib/postgresql/data
+    networks:
+      - web
+
+  wikijs:
+    image: ghcr.io/requarks/wiki:2
+    restart: unless-stopped
+    environment:
+      DB_TYPE: postgres
+      DB_HOST: wikijs-db
+      DB_PORT: 5432
+      DB_USER: wikijs
+      DB_PASS: change_me
+      DB_NAME: wiki
+    depends_on:
+      - wikijs-db
+    networks:
+      - web
+
+networks:
+  web:
+
+volumes:
+  caddy_data:
+  wikijs_db:
