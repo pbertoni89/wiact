@@ -1,3 +1,18 @@
-wiki.mydomain.tld {
+wiact.eu {
+    reverse_proxy wordpress:80
+}
+
+wiki.wiact.tld {
+    reverse_proxy wikijs:3000
+}
+
+
+wiact.local {
+    tls internal
+    reverse_proxy wordpress:80
+}
+
+wiki.wiact.local {
+    tls internal
     reverse_proxy wikijs:3000
 }
